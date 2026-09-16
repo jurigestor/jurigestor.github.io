@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisGestor — Software de Gestão para Advogados</title>
+    <meta name="description" content="JurisGestor: software de gestão jurídica para advogados. Organize prazos processuais, clientes, honorários, audiências e financeiro, inclusive offline.">
+    <meta name="keywords" content="software para advogados, gestão jurídica, organizar prazos processuais, controle de honorários advocatícios, sistema para escritório de advocacia">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://jurigestor.github.io/">
+    <meta property="og:title" content="JurisGestor — Gestão para Advogados">
+    <meta property="og:description" content="Controle de prazos, clientes, honorários e financeiro. 100% offline, vitalício, multiplataforma.">
+    <meta property="og:url" content="https://jurigestor.github.io/"><meta property="og:type" content="website"><meta property="og:site_name" content="JurisGestor"><meta property="og:image" content="https://jurigestor.github.io/jurisgestor-img-capa.png">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="JurisGestor — Gestão Jurídica para Advogados"><meta name="twitter:description" content="Organize prazos, clientes, honorários e financeiro com acesso vitalício e funcionamento offline."><meta name="twitter:image" content="https://jurigestor.github.io/jurisgestor-img-capa.png">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JurisGestor","url":"https://jurigestor.github.io/","description":"Software de gestão jurídica para advogados, com prazos, clientes, honorários, audiências e financeiro.","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"97","priceCurrency":"BRL","url":"https://jurigestor.github.io/#comprar"},"featureList":["Gestão de prazos processuais","Controle de honorários","Clientes e processos","Financeiro do escritório","Funcionamento offline"]}</script>
+    <link rel="icon" type="image/png" href="jurisgestor-img-capa.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --navy: #0f1b2d;
+            --gold: #c9a84c;
+            --gold-light: #e8d5a0;
+            --dark-bg: #0a0f18;
+            --card-bg: #151f30;
+            --text: #f0f0f0;
+            --muted: #8899aa;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(10, 15, 24, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .nav-logo .juris { color: var(--text); }
+        .nav-logo .gestor { color: var(--gold); }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .menu-toggle { display:none; background:transparent; border:1px solid rgba(201,168,76,.5); color:var(--gold); border-radius:8px; padding:7px 10px; font-size:1.2rem; cursor:pointer; }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .btn-comprar {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-comprar:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(15, 27, 45, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero-text h1 span { color: var(--gold); }
+        .hero-text p {
+            font-size: 1.1rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .badge {
+            background: rgba(201, 168, 76, 0.15);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            color: var(--gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .badge.dark {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+        }
+        .hero-cta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3); }
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            border: 2px solid var(--gold);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover { background: rgba(201, 168, 76, 0.1); }
+
+        .hero-phone {
+            display: flex;
+            justify-content: center;
+        }
+        .phone-mockup {
+            width: 320px;
+            background: #1a1a1a;
+            border-radius: 36px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201, 168, 76, 0.1);
+        }
+        .phone-mockup img {
+            width: 100%;
+            border-radius: 28px;
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .section-title span { color: var(--gold); }
+        .section-subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-size: 1rem;
+            margin-bottom: 60px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            border-color: rgba(201, 168, 76, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            padding: 80px 24px;
+            background: var(--navy);
+        }
+        .screenshots-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .screenshot-item {
+            text-align: center;
+        }
+        .screenshot-item img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            border: 2px solid rgba(201, 168, 76, 0.2);
+        }
+        .screenshot-item p {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 24px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .price-card {
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 24px;
+            padding: 48px;
+            margin-top: 40px;
+        }
+        .price-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .price-value {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin: 16px 0;
+        }
+        .price-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 24px 0;
+        }
+        .price-card ul li {
+            padding: 8px 0;
+            font-size: 0.95rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .price-card ul li::before {
+            content: '✓';
+            color: var(--gold);
+            font-weight: bold;
+        }
+        .price-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+        .btn-ml {
+            background: #ffe600;
+            color: #2d3277;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-ml:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 230, 0, 0.3); }
+        .btn-direto {
+            background: transparent;
+            color: var(--text);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+        }
+        .btn-direto:hover { border-color: var(--gold); color: var(--gold); }
+
+        /* Demo */
+        .demo-section {
+            padding: 80px 24px;
+            background: var(--navy);
+            text-align: center;
+        }
+        .demo-section iframe {
+            width: 390px;
+            height: 700px;
+            border-radius: 20px;
+            border: 3px solid rgba(201, 168, 76, 0.3);
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        footer p { color: var(--muted); font-size: 0.85rem; }
+        footer a { color: var(--gold); text-decoration: none; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Meta counter */
+        .meta-section {
+            padding: 60px 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .meta-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+        }
+        .meta-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+        .meta-label { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content { grid-template-columns: 1fr; gap: 40px; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-phone { order: -1; }
+            .phone-mockup { width: 250px; }
+            .nav-links { display: none; }
+            .menu-toggle { display:block; }
+            nav.menu-open .nav-links { display:flex; position:absolute; top:68px; left:0; right:0; flex-direction:column; align-items:stretch; gap:3px; padding:14px 24px 18px; background:var(--dark-bg); border-bottom:1px solid rgba(201,168,76,.2); }
+            nav.menu-open .nav-links a { padding:9px 4px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .price-card { padding: 32px 24px; }
+            .price-value { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">
+            <span>⚖</span>
+            <span class="juris">Juris</span><span class="gestor">Gestor</span>
+        </div>
+        <div class="nav-links" id="site-menu">
+            <a href="#recursos">Recursos</a>
+            <a href="#demonstracao">Demo</a>
+            <a href="#comprar">Comprar</a>
+            <a href="https://saulomgg.github.io" target="_blank" rel="noopener">Desenvolvedor</a>
+            <a href="blog.html">Blog</a>
+        </div>
+        <a href="#comprar" class="btn-comprar">Comprar — R$ 97</a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Abrir menu">☰</button>
+    </nav>
+
+    <main id="main-content">
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Nunca Perca um <span>Prazo Fatal</span></h1>
+                <p>O JurisGestor é o software de gestão completo para advogados. Controle de prazos processuais, honorários, clientes, audiências e financeiro do escritório — tudo em um só lugar, no seu celular ou computador.</p>
+                <div class="hero-badges">
+                    <span class="badge">ACESSO VITALÍCIO</span>
+                    <span class="badge">FUNCIONA OFFLINE</span>
+                    <span class="badge dark">MULTIPLATAFORMA</span>
+                    <span class="badge dark">100% PRIVADO</span>
+                </div>
+                <div class="hero-cta">
+                    <a href="#comprar" class="btn-primary">🛒 Comprar Agora — R$ 97</a>
+                    <a href="#demonstracao" class="btn-secondary">▶️ Ver Demonstração</a>
+                </div>
+            </div>
+            <div class="hero-phone">
+                <div class="phone-mockup">
+                    <img src="juris-phone-dashboard.png" alt="JurisGestor Dashboard">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="recursos">
+        <h2 class="section-title">O que o <span>JurisGestor</span> faz por você</h2>
+        <p class="section-subtitle">Tudo que um advogado precisa para organizar o escritório, em um único app.</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Controle de Prazos Processuais</h3>
+                <p>Cadastre todos os seus prazos com alertas visuais por urgência. Nunca mais perca um prazo fatal por esquecimento. Categorizado por tipo (recurso, contestação, etc).</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Gestão de Honorários</h3>
+                <p>Calculadora automática por % do valor da causa. Registre honorários recebidos vs pendentes com barra de progresso por cliente. Histórico completo de pagamentos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Clientes e Audiências</h3>
+                <p>Organize todos os seus clientes com dados do processo. Acompanhe audiências com data, local e tipo em um calendário visual.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Financeiro do Escritório</h3>
+                <p>Controle entradas e saídas categorizadas (honorários, custas, aluguel, material). Veja saldo geral e do mês em tempo real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>100% Privado</h3>
+                <p>Seus dados ficam apenas no seu dispositivo. Confidencialidade total do cliente. Exporte em JSON a qualquer momento.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Multiplataforma + Offline</h3>
+                <p>Funciona em qualquer celular, tablet ou computador. Funciona sem internet. Instale na tela inicial como um app nativo.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">☁️</div>
+                <h3>Backup e sincronização privada</h3>
+                <p>O app já permite exportar seus dados. A sincronização via nuvem 100% privada está no roadmap para ampliar o backup sem abrir mão do controle.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Conteúdo para sua rotina</h3>
+                <p>Leia guias no blog sobre prazos, honorários, clientes e organização do escritório. <a href="blog.html" style="color:var(--gold)">Acessar o blog →</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="screenshots">
+        <div class="screenshots-inner">
+            <h2 class="section-title">Veja o <span>app em ação</span></h2>
+            <p class="section-subtitle">Interface profissional com tema escuro dourado, feita para advogados.</p>
+            <div class="screenshots-grid">
+                <div class="screenshot-item">
+                    <img src="juris-phone-dashboard.png" alt="Dashboard">
+                    <p>Dashboard — Visão geral do escritório</p>
+                </div>
+                <div class="screenshot-item">
+                    <img src="juris-phone-prazos.png" alt="Prazos">
+                    <p>Prazos — Alertas por urgência</p>
+                </div>
+                <div class="screenshot-item">
+                    <img src="juris-phone-honorarios.png" alt="Honorários">
+                    <p>Honorários — Barra de progresso por cliente</p>
+                </div>
+                <div class="screenshot-item">
+                    <img src="juris-phone-financeiro.png" alt="Financeiro">
+                    <p>Financeiro — Entradas e saídas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo -->
+    <section class="demo-section" id="demonstracao">
+        <h2 class="section-title" style="color: var(--text);">Veja o JurisGestor <span>em ação</span></h2>
+        <p style="color: var(--muted); margin-top: 8px;">Interface limpa, profissional e fácil de usar. Tudo no seu bolso.</p>
+        <div style="display: flex; gap: 40px; justify-content: center; align-items: center; margin-top: 30px; flex-wrap: wrap;">
+            <div class="phone-mockup">
+                <img src="juris-phone-prazos.png" alt="JurisGestor Prazos">
+            </div>
+            <div class="phone-mockup">
+                <img src="juris-phone-honorarios.png" alt="JurisGestor Honorários">
+            </div>
+        </div>
+        <p style="color: var(--muted); font-size: 0.8rem; margin-top: 20px;">
+            Funciona offline — seus dados ficam seguros no seu aparelho. Acesso completo após ativar com sua chave de licença.
+        </p>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="comprar">
+        <h2 class="section-title">Compre agora por <span>R$ 97</span></h2>
+        <p class="section-subtitle">Acesso vitalício. Pague uma vez, use para sempre.</p>
+        <div class="price-card">
+            <h3>JurisGestor — Acesso Vitalício</h3>
+            <div class="price-value">R$ 97</div>
+            <p style="color: var(--muted);">Entrega digital instantânea (até 4 horas)</p>
+            <ul>
+                <li>App completo com acesso vitalício</li>
+                <li>1 chave de ativação = até 3 aparelhos</li>
+                <li>Funciona offline (sem internet)</li>
+                <li>Multiplataforma (celular, tablet, PC)</li>
+                <li>100% privado — dados no seu dispositivo</li>
+                <li>4 temas personalizáveis</li>
+                <li>Atualizações gratuitas</li>
+                <li>Suporte via chat</li>
+            </ul>
+            <div class="price-buttons">
+                <a href="https://www.mercadolivre.com.br/jurisgestor-software-advogado-controle-prazos-app-vitalicio/up/MLBU4715764333?pdp_filters=item_id:MLB5065004315" target="_blank" class="btn-ml">🛒 Comprar no Mercado Livre</a>
+                <a href="https://wa.me/5522988195993?text=Olá! Quero comprar o JurisGestor por R$97" target="_blank" class="btn-direto">💬 Comprar direto (WhatsApp)</a>
+            </div>
+            <p style="color: var(--muted); font-size: 0.8rem; margin-top: 20px;">
+                Após a compra, envie seu e-mail pelo chat do Mercado Livre ou WhatsApp.<br>
+                Você receberá a chave de ativação + link de acesso em até 4 horas.
+            </p>
+        </div>
+    </section>
+
+    <!-- Meta -->
+    <section class="meta-section">
+        <h2 style="font-size: 1.5rem; font-weight: 700;">🎯 Meta de Atualização</h2>
+        <div class="meta-box">
+            <div class="meta-number">100</div>
+            <div class="meta-label">vendas para a próxima grande atualização</div>
+        </div>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-top: 16px;">
+            Quando atingirmos 100 vendas, lançaremos uma atualização com novos recursos.<br>
+            Quanto mais gente usa, mais rápido melhoramos o app. Compartilhe!
+        </p>
+    </section>
+
+    <!-- Doação -->
+    <section style="padding: 60px 24px; max-width: 600px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 16px;">💛 Ajude a Manter o App Atualizado</h2>
+        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 20px;">
+            Toda contribuição é contabilizada para a atualização do JurisGestor e de todo o ecossistema de apps.
+        </p>
+        <div style="background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid rgba(201, 168, 76, 0.2);">
+            <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 8px;">Chave PIX (e-mail):</p>
+            <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <code style="background: rgba(0,0,0,0.3); padding: 8px 16px; border-radius: 8px; font-size: 0.9rem;">spr***@gmail.com</code>
+                <button onclick="navigator.clipboard.writeText('spruuser@gmail.com'); this.textContent='Copiado!';" style="background: var(--gold); color: var(--navy); border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">📋 Copiar</button>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">Qualquer valor ajuda! Envie o comprovante pelo WhatsApp.</p>
+        </div>
+    </section>
+
+    </main>
+    <!-- Footer -->
+    <footer>
+        <p>⚖ JurisGestor v1.0 — Software de Gestão para Advogados</p>
+        <p style="margin-top: 8px;">Desenvolvido por <a href="https://saulomgg.github.io" target="_blank">Saulo MGG</a> — Full Stack Developer</p>
+        <div class="footer-links">
+            <a href="https://saulomgg.github.io" target="_blank">Site do Desenvolvedor</a>
+            <a href="https://github.com/saulomgg" target="_blank">GitHub</a>
+            <a href="blog.html">Blog</a>
+            <a href="https://docegestor.github.io" target="_blank">DoceGestor</a>
+            <a href="https://tubesynk.github.io" target="_blank">TubeSynk</a>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.75rem; color: #555;">
+            © 2026 JurisGestor. Todos os direitos reservados.
+        </p>
+    </footer>
+
+    <script>
+        const menuButton = document.querySelector('.menu-toggle');
+        const siteNav = document.querySelector('nav');
+        menuButton?.addEventListener('click', () => { const open = siteNav.classList.toggle('menu-open'); menuButton.setAttribute('aria-expanded', String(open)); menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu'); });
+        document.querySelectorAll('#site-menu a').forEach(link => link.addEventListener('click', () => { siteNav.classList.remove('menu-open'); menuButton?.setAttribute('aria-expanded','false'); }));
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
