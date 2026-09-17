@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /*?post=*
+
+Sitemap: https://jurigestor.github.io/sitemap.xml
